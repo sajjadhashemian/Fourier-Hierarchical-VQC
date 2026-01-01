@@ -1,4 +1,5 @@
 """Composite plotting utilities for the synthetic experiment."""
+
 from __future__ import annotations
 
 import argparse
@@ -7,7 +8,6 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import pandas as pd
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 
 def _load_summary(summary_path: Path) -> dict:
@@ -34,8 +34,16 @@ def make_composite_figure(csv_path: Path, summary_path: Path, out_path: Path | N
         else:
             expand_iter = int(df["iter"].min())
 
-    fig = plt.figure(figsize=(10, 6))
-    ax = fig.add_subplot(1, 1, 1)
+    fig = plt.figure(figsize=(12, 7))
+    gs = fig.add_gridspec(
+        nrows=2,
+        ncols=2,
+        width_ratios=[2.5, 1],
+        height_ratios=[1, 1],
+        wspace=0.35,
+        hspace=0.4,
+    )
+    ax = fig.add_subplot(gs[:, 0])
 
     for method in sorted(df["method"].unique()):
         d = df[df["method"] == method].sort_values("iter")
@@ -46,16 +54,17 @@ def make_composite_figure(csv_path: Path, summary_path: Path, out_path: Path | N
     ax.set_ylabel("smoothed loss (as logged)")
     ax.legend(loc="best")
 
-    ax_g = inset_axes(ax, width="35%", height="35%", loc="upper right", borderpad=1.2)
+    ax_g = fig.add_subplot(gs[0, 1])
     grad_new = summ.get("grad_new", None)
 
     if isinstance(grad_new, dict) and ("naive" in grad_new) and ("phase_align" in grad_new):
         labels = ["naive", "phase_align"]
         values = [float(grad_new["naive"]), float(grad_new["phase_align"])]
         ax_g.bar(labels, values)
-        ax_g.set_title(r"$\\|\\nabla_{\\mathrm{new}}\\|$ at expansion")
+        ax_g.set_title(r"$\|\nabla_{\mathrm{new}}\|$ at expansion")
         ax_g.set_ylabel("magnitude")
     else:
+
         def slope_proxy(method: str) -> float:
             d = df[df["method"] == method].sort_values("iter")
             d = d[d["iter"] >= expand_iter].head(3)
@@ -69,14 +78,14 @@ def make_composite_figure(csv_path: Path, summary_path: Path, out_path: Path | N
         ax_g.set_title("activation proxy (fallback)")
         ax_g.set_ylabel("Δloss")
 
-    ax_td = inset_axes(ax, width="35%", height="35%", loc="lower left", borderpad=1.2)
+    ax_td = fig.add_subplot(gs[1, 1])
     td = summ.get("trap_density", None)
 
     if isinstance(td, dict) and ("sigma" in td) and ("value" in td):
         sig = [float(x) for x in td["sigma"]]
         val = [float(x) for x in td["value"]]
         ax_td.plot(sig, val, marker="o")
-        ax_td.set_xlabel(r"$\\sigma$")
+        ax_td.set_xlabel(r"$\sigma$")
         ax_td.set_ylabel("trap density")
         ax_td.set_title("trap density vs smoothing")
     else:
