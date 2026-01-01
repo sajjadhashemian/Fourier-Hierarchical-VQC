@@ -8,6 +8,23 @@ Prototype code for Fourier-structured hierarchical optimization with determinist
 python -m pip install -e .[dev]
 ```
 
+### Installing inside a Conda environment
+
+```bash
+# create and activate an isolated env (Python 3.11 matches the lockfile targets)
+conda create -n hql python=3.11 -y
+conda activate hql
+
+# install the base package with dev tools (ruff/pytest/mypy/black)
+python -m pip install -e .[dev]
+
+# optional extras
+# pip install -e ".[ml]"            # torch + scikit-learn
+# pip install -e ".[pennylane]"      # PennyLane stack
+# pip install -e ".[pennylane,ml]"  # common ML + PennyLane
+# pip install -e ".[qiskit]"         # Qiskit simulator stack
+```
+
 ## Run the synthetic experiment
 
 ```bash
