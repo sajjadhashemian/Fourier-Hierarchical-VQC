@@ -1,0 +1,49 @@
+Metadata-Version: 2.1
+Name: hql
+Version: 0.1.0
+Summary: Hierarchical Quantum Learning: DHFC/SGHO with phase-aligned bias correction
+Author: Your Name
+License: MIT
+Requires-Python: <3.15,>=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: numpy==2.4.0
+Requires-Dist: scipy==1.16.3
+Requires-Dist: pandas==2.3.3
+Requires-Dist: matplotlib==3.10.8
+Requires-Dist: PyYAML==6.0.3
+Requires-Dist: tqdm==4.67.1
+Provides-Extra: ml
+Requires-Dist: torch==2.9.1; extra == "ml"
+Requires-Dist: scikit-learn==1.8.0; extra == "ml"
+Provides-Extra: pennylane
+Requires-Dist: pennylane==0.43.2; extra == "pennylane"
+Provides-Extra: lightning
+Requires-Dist: pennylane-lightning==0.43.0; extra == "lightning"
+Provides-Extra: qiskit
+Requires-Dist: qiskit==2.2.3; extra == "qiskit"
+Requires-Dist: qiskit-aer==0.17.2; extra == "qiskit"
+Requires-Dist: qiskit-machine-learning==0.9.0; extra == "qiskit"
+Provides-Extra: dev
+Requires-Dist: pytest==9.0.2; extra == "dev"
+Requires-Dist: ruff==0.14.10; extra == "dev"
+Requires-Dist: mypy==1.19.1; extra == "dev"
+Requires-Dist: black==25.12.0; extra == "dev"
+
+# Fourier-Hierarchical-VQC
+
+Prototype code for Fourier-structured hierarchical optimization with deterministic (DHFC) and stochastic grouped (SGHO) training, phase-aligned initialization, and smoothing-based trap analysis.
+
+## Getting started
+
+```bash
+python -m pip install -e .[dev]
+```
+
+## Run the synthetic experiment
+
+```bash
+python -m hql.experiments.exp_synth_one_figure
+python -m hql.analysis.plots --csv results_synth.csv --summary summary_synth.json --out figures/synth_composite.png
+```
+
+The experiment logs per-iteration losses for naive and phase-aligned DHFC (plus an SGHO baseline), records gradient activation at expansion, estimates trap density versus smoothing, and produces a composite figure.
