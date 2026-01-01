@@ -1,0 +1,3 @@
+[console_scripts]
+hql-plot = hql.analysis.plots:main
+hql-synth = hql.experiments.exp_synth_one_figure:main
